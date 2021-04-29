@@ -17,16 +17,6 @@ const pool = new Pool({
  * @return {Promise<{}>} A promise to the user.
  */
 const getUserWithEmail = function(email) {
-  // let user;
-  // for (const userId in users) {
-  //   user = users[userId];
-  //   if (user.email.toLowerCase() === email.toLowerCase()) {
-  //     break;
-  //   } else {
-  //     user = null;
-  //   }
-  // }
-  // return Promise.resolve(user);
 
   return pool
     .query(`
@@ -46,7 +36,6 @@ exports.getUserWithEmail = getUserWithEmail;
  * @return {Promise<{}>} A promise to the user.
  */
 const getUserWithId = function(id) {
-  // return Promise.resolve(users[id]);
 
   return pool
     .query(`
@@ -66,11 +55,6 @@ exports.getUserWithId = getUserWithId;
  * @return {Promise<{}>} A promise to the user.
  */
 const addUser =  function(user) {
-  // const userId = Object.keys(users).length + 1;
-  // user.id = userId;
-  // users[userId] = user;
-  // return Promise.resolve(user);
-  
   
   return pool
     .query(`
@@ -91,7 +75,6 @@ exports.addUser = addUser;
  * @return {Promise<[{}]>} A promise to the reservations.
  */
 const getAllReservations = function(guest_id, limit = 10) {
-  // return getAllProperties(null, 2);
 
   return pool
     .query(`
@@ -104,8 +87,6 @@ const getAllReservations = function(guest_id, limit = 10) {
     `, [Number(guest_id), limit])
     .then(result => result.rows)
     .catch(err => err);
-
-
 };
 exports.getAllReservations = getAllReservations;
 
@@ -118,11 +99,6 @@ exports.getAllReservations = getAllReservations;
  * @return {Promise<[{}]>}  A promise to the properties.
  */
 const getAllProperties = (options, limit = 10) => {
-  // const limitedProperties = {};
-  // for (let i = 1; i <= limit; i++) {
-  //   limitedProperties[i] = properties[i];
-  // }
-  // return Promise.resolve(limitedProperties);
   
   const queryParams = [];
 
@@ -186,23 +162,7 @@ const getAllProperties = (options, limit = 10) => {
     LIMIT $${queryParams.length};
     `;
   }
-
-  // console.log(queryString, queryParams);
-
   return pool.query(queryString, queryParams).then(res => res.rows);
-  
-  // return pool
-  //   .query(`
-  //   SELECT properties.*
-  //   FROM properties
-  //   LIMIT $1;
-  //   `, [limit])
-  //   .then(result => {
-  //     console.log(limit);
-  //     console.log("success");
-  //     return result.rows;
-  //   })
-  //   .catch(err => err.message);
 };
 exports.getAllProperties = getAllProperties;
 
@@ -213,10 +173,6 @@ exports.getAllProperties = getAllProperties;
  * @return {Promise<{}>} A promise to the property.
  */
 const addProperty = function(property) {
-  // const propertyId = Object.keys(properties).length + 1;
-  // property.id = propertyId;
-  // properties[propertyId] = property;
-  // return Promise.resolve(property);
   console.log(typeof property.owner_id);
   return pool
     .query(`
@@ -229,6 +185,5 @@ const addProperty = function(property) {
       property.country, property.street, property.city, property.province, property.post_code])
     .then(result => result.rows[0])
     .catch(err => err);
-
 };
 exports.addProperty = addProperty;
