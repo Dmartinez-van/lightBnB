@@ -1,5 +1,3 @@
-const properties = require('./json/properties.json');
-const users = require('./json/users.json');
 const { Pool } = require('pg');
 
 const pool = new Pool({
@@ -137,12 +135,7 @@ const getAllProperties = (options, limit = 10) => {
     queryString += `WHERE cost_per_night <= $${queryParams.length}`;
   }
 
-  if (options.minimum_rating && queryParams.length > 0) {
-    queryParams.push(Number(`${options.minimum_rating}`));
-    queryString += `GROUP BY properties.id
-                    HAVING AVG(property_reviews.rating) >= $${queryParams.length}
-                    `;
-  } else if (options.minimum_rating) {
+  if (options.minimum_rating) {
     queryParams.push(Number(`${options.minimum_rating}`));
     queryString += `GROUP BY properties.id 
                     HAVING AVG(property_reviews.rating) >= $${queryParams.length}
@@ -162,6 +155,9 @@ const getAllProperties = (options, limit = 10) => {
     LIMIT $${queryParams.length};
     `;
   }
+
+  console.log(queryString, queryParams);
+
   return pool.query(queryString, queryParams).then(res => res.rows);
 };
 exports.getAllProperties = getAllProperties;
