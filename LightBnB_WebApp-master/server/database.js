@@ -83,7 +83,7 @@ const getAllReservations = function(guest_id, limit = 15) {
     WHERE reservations.guest_id = $1
     GROUP BY reservations.id, properties.id
     LIMIT $2; 
-    `, [Number(guest_id), limit])
+    `, [guest_id, limit])
     .then(result => {
       console.log("result.rows", result.rows);
       return result.rows;
@@ -114,33 +114,20 @@ const getAllProperties = (options, limit = 10) => {
     queryParams.push(`%${options.city}%`);
     queryString += `WHERE city LIKE $${queryParams.length}`;
   }
-
-  if (options.owner_id && queryParams.length > 0) {
+  if (options.owner_id) {
     queryParams.push(`${options.owner_id}`);
-    queryString += ` AND owner_id = $${queryParams.length}`;
-  } else if (options.owner_id) {
-    queryParams.push(`%${options.owner_id}%`);
-    queryString += `WHERE owner_id = $${queryParams.length}`;
+    queryString += `AND owner_id = $${queryParams.length}`;
   }
-
-  if (options.minimum_price_per_night && queryParams.length > 0) {
-    queryParams.push(Number(`${options.minimum_price_per_night * 100}`));
-    queryString += ` AND cost_per_night >= $${queryParams.length}`;
-  } else if (options.minimum_price_per_night) {
-    queryParams.push(Number(`${options.minimum_price_per_night * 100}`));
-    queryString += `WHERE cost_per_night >= $${queryParams.length}`;
+  if (options.minimum_price_per_night) {
+    queryParams.push(`${options.minimum_price_per_night * 100}`);
+    queryString += `AND cost_per_night >= $${queryParams.length}`;
   }
-
-  if (options.maximum_price_per_night && queryParams.length > 0) {
-    queryParams.push(Number(`${options.maximum_price_per_night * 100}`));
-    queryString += ` AND cost_per_night <= $${queryParams.length}`;
-  } else if (options.maximum_price_per_night) {
-    queryParams.push(Number(`${options.maximum_price_per_night * 100}`));
-    queryString += `WHERE cost_per_night <= $${queryParams.length}`;
+  if (options.maximum_price_per_night) {
+    queryParams.push(`${options.maximum_price_per_night * 100}`);
+    queryString += `AND cost_per_night <= $${queryParams.length}`;
   }
-
   if (options.minimum_rating) {
-    queryParams.push(Number(`${options.minimum_rating}`));
+    queryParams.push(`${options.minimum_rating}`);
     queryString += `GROUP BY properties.id 
                     HAVING AVG(property_reviews.rating) >= $${queryParams.length}
                  `;
